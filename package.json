@@ -1,0 +1,19 @@
+{
+  "name": "christmas-bokeh",
+  "version": "1.0.0",
+  "description": "",
+  "author": {
+    "name": "Nik Rowell",
+    "email": "nik@nikrowell.com",
+    "url": "http://www.nikrowell.com/"
+  },
+  "scripts": {
+    "start": "npm run clean && parcel index.html --open",
+    "build": "npm run clean && parcel build index.html",
+    "clean": "rm -fr .cache/ && rm -fr dist/*"
+  },
+  "dependencies": {
+    "dat.gui": "^0.7.3",
+    "nice-color-palettes": "^2.0.0"
+  }
+}
