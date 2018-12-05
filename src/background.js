@@ -1,5 +1,6 @@
-import { random } from './utils';
 import Light from './light';
+import { random } from './utils';
+import { colors } from './config';
 
 export default class Background {
 
@@ -22,7 +23,6 @@ export default class Background {
     context.fillStyle = base;
     context.fillRect(0, 0, width, height);
 
-    const colors = ['#930101', '#FF0000', '#DF0000', '#D9DFDC', '#B0BFC2'];
     const count = Math.floor(0.025 * width);
 
     for (let i = 0; i < count; i++) {
