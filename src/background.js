@@ -23,14 +23,14 @@ export default class Background {
     context.fillStyle = base;
     context.fillRect(0, 0, width, height);
 
-    const count = Math.floor(0.025 * width);
+    const count = Math.floor(0.05 * width);
 
     for (let i = 0; i < count; i++) {
 
       const light = new Light({
         radius: random(200, 400),
-        alpha: random(0.025, 0.1),
-        softness: random(0.5, 0.9),
+        alpha: random(0.01, 0.05),
+        softness: random(0.25, 0.9),
         color: random(colors)
       });
 
@@ -40,8 +40,6 @@ export default class Background {
         (height / 2) - light.radius + random(-200, 200)
       );
     }
-
-
   }
 
   render() {

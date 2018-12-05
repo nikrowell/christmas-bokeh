@@ -1,15 +1,19 @@
 import Background from './background';
-import Overlay from './overlay';
 import Light from './light';
-import { random, fill, TWO_PI } from './utils'
-import { numLights, colors } from './config';
+import { random, fill, lerp, TWO_PI } from './utils'
+import { colors } from './config';
+import './style';
 
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
-canvas.style.cssText = 'width:100%;height:100%;';
-
-document.body.style.cssText = 'margin:0;padding:0;overflow:hidden;';
 document.body.appendChild(canvas);
+
+let lights = [];
+
+const background = new Background();
+
+// import Overlay from './overlay';
+// const overlay = new Overlay();
 
 const audio = new Audio();
 audio.src = require('./audio.mp3');
@@ -19,12 +23,10 @@ const audioContext = new AudioContext();
 const analyser = audioContext.createAnalyser();
 audioContext.createMediaElementSource(audio).connect(analyser);
 analyser.connect(audioContext.destination);
-// analyser.smoothingTimeConstant = 0.4;
 analyser.fftSize = 256;
-
-console.log(analyser.maxDecibels, analyser.minDecibels)
 analyser.maxDecibels = 0;
 analyser.minDecibels = -100;
+// analyser.smoothingTimeConstant = 0.4;
 
 const bufferLength = analyser.frequencyBinCount;
 const bufferArray = new Uint8Array(bufferLength);
@@ -33,13 +35,10 @@ const bufferArray = new Uint8Array(bufferLength);
 // TweenMax.to(this.tiles[i].scale, .3, { y: scale });
 
 
-const background = new Background();
-const overlay = new Overlay();
-
-let lights = [];
 
 function draw(time) {
 
+  time = time * 0.001;
   const { width, height } = canvas;
 
   context.clearRect(0, 0, width, height);
@@ -53,11 +52,9 @@ function draw(time) {
   });
 
   context.globalCompositeOperation = 'source-over';
-  overlay.draw(context);
+  // overlay.draw(context);
 
-
-  /* time = time * 0.001;
-
+  /*
   analyser.getByteFrequencyData(bufferArray);
   var barWidth = (width / bufferLength) * 2.5;
   var barHeight;
@@ -73,6 +70,16 @@ function draw(time) {
     x += barWidth + 1;
   } */
 
+  // context.restore();
+  // context.beginPath();
+  // context.moveTo(0, height / 2);
+  // context.lineTo(width, height / 2);
+  // context.moveTo(width / 2, 0);
+  // context.lineTo(width / 2, height);
+  // context.lineWidth = 0.5;
+  // context.strokeStyle = 'rgba(255,0,0,0.75)';
+  // context.stroke();
+
   requestAnimationFrame(draw);
 }
 
@@ -86,19 +93,27 @@ function resize(event) {
 function reset() {
 
   const { width, height } = canvas;
-  const sign = random() > 0.5 ? -1 : 1;
+  const count = Math.floor(width * 0.05);
+  const theta = random(TWO_PI);
+  const amplitude = height * 0.08;
+  const cx = width / 2;
+  const cy = height / 2;
 
-  lights = fill(numLights, i => {
+  lights = fill(count, i => {
 
-    const a = (i / numLights);
-    const x = a * width;
-    const y = (height / 2) + Math.sin(a * sign * TWO_PI) * 80 + random(-120, 120);
+    const percent = (i / count);
+    const x = percent * width;
+    const distanceToCenter = 1 - Math.abs(cx - x) / cx;
+    const varianceRange = lerp(distanceToCenter, 75, 150);
+    const variance = random(-varianceRange, varianceRange);
+    const offset = Math.sin(theta + percent * TWO_PI) * amplitude + variance;
+    const y = cy + offset;
 
     return new Light({
       position: {x, y},
-      radius: random(40, 60),
+      radius: random(30, 60),
       color: random(colors),
-      alpha: random(0.02, 0.5),
+      alpha: random(0.05, 0.6),
       softness: random(0.02, 0.5)
     });
   });
@@ -106,7 +121,7 @@ function reset() {
 
 function init() {
 
-  window.addEventListener('resize', resize);
+  // window.addEventListener('resize', resize);
   resize();
   reset();
 
@@ -123,8 +138,8 @@ function init() {
     gui.addColor(pilot, 'color').onChange(value => pilot.render());
   }
 
-  // document.body.addEventListener('click', function click(event) {
-  //   document.body.removeEventListener('click', click);
+  // document.body.addEventListener('click', function start(event) {
+  //   document.body.removeEventListener('click', start);
   //   audio.play();
   //   audioContext.resume();
   // });
