@@ -1,7 +1,7 @@
 {
   "name": "christmas-bokeh",
-  "version": "1.1.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A Christmas-inspired creative coding experiment.",
   "author": {
     "name": "Nik Rowell",
     "email": "nik@nikrowell.com",
@@ -10,13 +10,10 @@
   "scripts": {
     "start": "npm run clean && parcel index.html --open",
     "build": "npm run clean && parcel build index.html",
-    "clean": "rm -fr .cache/ && rm -fr dist/*"
+    "clean": "rm -fr .cache/ && rm -fr dist/*",
+    "netlify": "npm install parcel-bundler && npm run build"
   },
   "dependencies": {
-    "dat.gui": "^0.7.3",
-    "nice-color-palettes": "^2.0.0"
-  },
-  "devDependencies": {
-    "parcel-bundler": "*"
+    "dat.gui": "^0.7.3"
   }
 }

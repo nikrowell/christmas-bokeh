@@ -1,46 +1,27 @@
 import Background from './background';
 import Light from './light';
 import { random, fill, lerp, TWO_PI } from './utils'
-import { colors } from './config';
+import { colors, DEBUG } from './config';
 import './style';
 
 const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
+canvas.className = 'stage';
 document.body.appendChild(canvas);
 
-let lights = [];
+const audio = new Audio();
+audio.src = require('../assets/arabian-dance.mp3');
+audio.load();
 
 const background = new Background();
 
-// import Overlay from './overlay';
-// const overlay = new Overlay();
-
-const audio = new Audio();
-audio.src = require('./audio.mp3');
-audio.load();
-
-const audioContext = new AudioContext();
-const analyser = audioContext.createAnalyser();
-audioContext.createMediaElementSource(audio).connect(analyser);
-analyser.connect(audioContext.destination);
-analyser.fftSize = 256;
-analyser.maxDecibels = 0;
-analyser.minDecibels = -100;
-// analyser.smoothingTimeConstant = 0.4;
-
-const bufferLength = analyser.frequencyBinCount;
-const bufferArray = new Uint8Array(bufferLength);
-
-// scale = this.map(freq, 0, 255, 0.001, 1);
-// TweenMax.to(this.tiles[i].scale, .3, { y: scale });
-
-
+let lights = [];
 
 function draw(time) {
 
-  time = time * 0.001;
   const { width, height } = canvas;
 
+  context.save();
   context.clearRect(0, 0, width, height);
   context.globalCompositeOperation = 'lighter';
 
@@ -52,34 +33,33 @@ function draw(time) {
   });
 
   context.globalCompositeOperation = 'source-over';
-  // overlay.draw(context);
 
-  /*
-  analyser.getByteFrequencyData(bufferArray);
-  var barWidth = (width / bufferLength) * 2.5;
-  var barHeight;
-  var x = 0;
+  if (DEBUG) {
 
-  for (var i = 0; i < bufferLength; i++) {
-    barHeight = bufferArray[i];
-    var r = barHeight// + (25 * (i / bufferLength));
-    var g = 0;
-    var b = 0;
-    context.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
-    context.fillRect(x, 0, barWidth, barHeight);
-    x += barWidth + 1;
-  } */
+    context.restore();
+    context.beginPath();
+    context.moveTo(0, height * 0.333);
+    context.lineTo(width, height * 0.333);
+    context.moveTo(0, height * 0.667);
+    context.lineTo(width, height * 0.667);
+    context.moveTo(width * 0.333, 0);
+    context.lineTo(width * 0.333, height);
+    context.moveTo(width * 0.667, 0);
+    context.lineTo(width * 0.667, height);
+    context.lineWidth = 0.5;
+    context.strokeStyle = 'rgba(255,10,10,0.75)';
+    context.stroke();
 
-  // context.restore();
-  // context.beginPath();
-  // context.moveTo(0, height / 2);
-  // context.lineTo(width, height / 2);
-  // context.moveTo(width / 2, 0);
-  // context.lineTo(width / 2, height);
-  // context.lineWidth = 0.5;
-  // context.strokeStyle = 'rgba(255,0,0,0.75)';
-  // context.stroke();
+    colors.forEach((c, i) => {
+      const r = 20;
+      context.beginPath();
+      context.fillStyle = c;
+      context.arc(20 + r + i * (r * 2 + 10), height - r - 20, r, 0, TWO_PI);
+      context.fill();
+    });
+  }
 
+  context.restore();
   requestAnimationFrame(draw);
 }
 
@@ -121,15 +101,19 @@ function reset() {
 
 function init() {
 
-  // window.addEventListener('resize', resize);
   resize();
   reset();
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (DEBUG) {
 
     const dat = require('dat.gui');
     const gui = new dat.GUI();
     const pilot = lights[ Math.floor((lights.length - 1) / 3) ];
+
+    pilot.twinkle = {
+      phase: random(TWO_PI),
+      speed: random(0.001, 0.005)
+    };
 
     gui.addFolder('Light');
     gui.add(pilot, 'radius', 20, 200).onChange(value => pilot.render());
@@ -138,11 +122,11 @@ function init() {
     gui.addColor(pilot, 'color').onChange(value => pilot.render());
   }
 
-  // document.body.addEventListener('click', function start(event) {
-  //   document.body.removeEventListener('click', start);
-  //   audio.play();
-  //   audioContext.resume();
-  // });
+  document.body.addEventListener('click', function start(event) {
+    document.body.removeEventListener('click', start);
+    audio.play();
+    audioContext.resume();
+  });
 
   requestAnimationFrame(draw);
 }

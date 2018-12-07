@@ -4,46 +4,46 @@ import { colors } from './config';
 
 export default class Background {
 
-  constructor({
-    base = '#0C0000'
-  } = {}) {
+  constructor({baseColor = '#0C0000'} = {}) {
+    this.baseColor = baseColor;
+    this.graphics = document.createElement('canvas').getContext('2d');
+    this.render();
+  }
 
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+  get canvas() {
+    return this.graphics.canvas;
+  }
 
-    this.canvas = canvas;
-    this.context = context; // thiss.ca.createElement('canvas');
+  render() {
 
     const width = window.innerWidth;
     const height = window.innerHeight;
+    const centerY = height / 2;
+    const count = Math.floor(0.05 * width);
+    const context = this.graphics;
+
     context.canvas.width = width;
     context.canvas.height = height;
     context.globalCompositeOperation = 'lighter';
     context.beginPath();
-    context.fillStyle = base;
+    context.fillStyle = this.baseColor;
     context.fillRect(0, 0, width, height);
-
-    const count = Math.floor(0.05 * width);
 
     for (let i = 0; i < count; i++) {
 
       const light = new Light({
         radius: random(200, 400),
         alpha: random(0.01, 0.05),
-        softness: random(0.25, 0.9),
-        color: random(colors)
+        color: random(colors),
+        softness: random(0.25, 0.9)
       });
 
       context.drawImage(
         light.canvas,
         random(width) - light.radius,
-        (height / 2) - light.radius + random(-200, 200)
+        centerY - light.radius + random(-200, 200)
       );
     }
-  }
-
-  render() {
-
   }
 
   draw(context) {

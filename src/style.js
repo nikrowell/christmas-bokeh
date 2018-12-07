@@ -13,8 +13,9 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: #0C0000;
 }
-canvas {
+.stage {
   width: 100%;
   height: 100%;
   object-fit: cover;

@@ -1,13 +1,14 @@
-import { TWO_PI, toRGB, normalize, random } from './utils';
+import { TWO_PI, toRGB, random, normalize, lerp } from './utils';
 
 export default class Light {
 
   constructor({
-    position,
+    position = {x: 0, y: 0},
     radius,
     color = '#FFFFFF',
     alpha = 0.5,
     softness = 0.1,
+    twinkle = false
   } = {}) {
 
     this.graphics = document.createElement('canvas').getContext('2d');
@@ -16,10 +17,11 @@ export default class Light {
     this.color = color;
     this.alpha = alpha;
     this.softness = softness;
-    // this.twinkle = false; // random() > 0.5 ? false : {};
-    // this.scale = 1;
-    // this.phase = random(TWO_PI);
-    // this.speed = 1; // random(0.2, 1.2);
+
+    this.twinkle = random() > 0.7 ? false : {
+      phase: random(TWO_PI),
+      speed: random(0.002, 0.004)
+    };
 
     this.render();
   }
@@ -27,10 +29,6 @@ export default class Light {
   get canvas() {
     return this.graphics.canvas;
   }
-
-  get x() { return this.position.x - this.radius; }
-  get y() { return this.position.y - this.radius; }
-  // get z() { return this.position.z; }
 
   render() {
 
@@ -42,8 +40,8 @@ export default class Light {
     gradient.addColorStop(softness, `rgba(${r},${g},${b},${alpha})`);
     gradient.addColorStop(1,        `rgba(${r},${g},${b},${alpha})`);
 
-    this.canvas.width = radius * 2
-    this.canvas.height = radius * 2;
+    this.canvas.width = radius * 2.1
+    this.canvas.height = radius * 2.1;
 
     graphics.translate(radius, radius);
     graphics.beginPath();
@@ -53,19 +51,29 @@ export default class Light {
   }
 
   update(time) {
-    if (this.twinkle === false) return;
-    // this.scale = (1 + Math.sin(time * this.speed) / 2) * this.amplitude;
-    // this.scale = normalize(Math.sin(time * this.speed), -1, 1) * 1;
-    // this.scale = 1 + Math.sin(time * 0.0015) / 2 * 0.091026;
-    // this.scale = Math.abs( * 50);
-    // console.log(this.scale)
+
+    if ( ! this.twinkle) return;
+
+    const { phase, speed } = this.twinkle;
+    const theta = phase + time * speed;
+    const value = normalize(Math.sin(theta), -1, 1);
+
+    this.twinkle.scale = lerp(value, 0.98, 1.02);
+    this.twinkle.alpha = lerp(value, 0.1, 1);
   }
 
   draw(context) {
+
     context.save();
-    context.translate(this.x, this.y);
-    // context.scale(this.scale, this.scale);
-    context.drawImage(this.canvas, 0, 0);
+    context.translate(this.position.x, this.position.y);
+
+    if (this.twinkle) {
+      const { scale, alpha } = this.twinkle;
+      context.scale(scale, scale);
+      context.globalAlpha = alpha;
+    }
+
+    context.drawImage(this.canvas, -this.radius, -this.radius);
     context.restore();
   }
 }

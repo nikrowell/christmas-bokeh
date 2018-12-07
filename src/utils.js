@@ -33,11 +33,6 @@ export function random(min, max) {
   return min + Math.random() * (max - min);
 };
 
-random.weighted = samples => {
-  const total = [...Array(samples)].map(random).reduce((result, value) => result + value);
-  return total / samples;
-};
-
 export function toRadians(degrees) {
   return degrees * Math.PI / 180;
 };
