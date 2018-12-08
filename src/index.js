@@ -84,7 +84,7 @@ function reset() {
     const percent = (i / count);
     const x = percent * width;
     const distanceToCenter = 1 - Math.abs(cx - x) / cx;
-    const varianceRange = lerp(distanceToCenter, 75, 150);
+    const varianceRange = lerp(distanceToCenter, 80, 190);
     const variance = random(-varianceRange, varianceRange);
     const offset = Math.sin(theta + percent * TWO_PI) * amplitude + variance;
     const y = cy + offset;
