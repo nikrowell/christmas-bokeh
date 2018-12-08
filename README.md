@@ -1,6 +1,6 @@
-# Christmas Bokeh
+# Christmas Lights
 
-[christmas-bokeh.netlify.com](https://christmas-bokeh.netlify.com/)
+[christmas-lights.netlify.com](https://christmas-lights.netlify.com/)
 
 A Christmas-inspired creative coding experiment.
 
