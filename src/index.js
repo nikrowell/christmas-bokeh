@@ -10,7 +10,7 @@ canvas.className = 'stage';
 document.body.appendChild(canvas);
 
 const audio = new Audio();
-audio.src = require('../assets/arabian-dance.mp3');
+audio.src = require('../assets/nutcracker-arabian-dance.mp3');
 audio.load();
 
 const background = new Background();
