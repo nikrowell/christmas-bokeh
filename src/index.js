@@ -125,7 +125,6 @@ function init() {
   document.body.addEventListener('click', function start(event) {
     document.body.removeEventListener('click', start);
     audio.play();
-    audioContext.resume();
   });
 
   requestAnimationFrame(draw);
