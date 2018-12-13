@@ -3,7 +3,7 @@ import { TWO_PI, toRGB, random, normalize, lerp } from './utils';
 export default class Light {
 
   constructor({
-    position = {x: 0, y: 0},
+    position = {x: 0, y: 0, z: 0},
     radius,
     color = '#FFFFFF',
     alpha = 0.5,
@@ -18,7 +18,7 @@ export default class Light {
     this.alpha = alpha;
     this.softness = softness;
 
-    this.twinkle = random() > 0.7 ? false : {
+    this.twinkle = twinkle ? false : {
       phase: random(TWO_PI),
       speed: random(0.002, 0.004)
     };

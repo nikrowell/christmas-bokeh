@@ -10,10 +10,11 @@
   "scripts": {
     "start": "npm run clean && parcel index.html --open",
     "build": "npm run clean && parcel build index.html",
-    "clean": "rm -fr .cache/ && rm -fr dist/*",
+    "clean": "rm -fr .cache/ dist/*",
     "netlify": "npm install parcel-bundler && npm run build"
   },
   "dependencies": {
-    "dat.gui": "^0.7.3"
+    "dat.gui": "^0.7.3",
+    "facon": "^2.0.0"
   }
 }

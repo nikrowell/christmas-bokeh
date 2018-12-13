@@ -9,6 +9,26 @@ const context = canvas.getContext('2d');
 canvas.className = 'stage';
 document.body.appendChild(canvas);
 
+
+/* import html from 'facon';
+
+const ui = html`
+  <div class="splash">
+    <h1 ref="heading">Christmas Lights</h1>
+    <p>A Christmas-inspired creative coding experiment.</p>
+    <button ref="button">Let's Twinkle!</button>
+  </div>
+`;
+
+const { heading, button } = ui.collect();
+document.body.appendChild(ui);
+
+button.addEventListener('click', function start(event) {
+  button.removeEventListener('click', start);
+  audio.play();
+}); */
+
+
 const audio = new Audio();
 audio.src = require('../assets/nutcracker-arabian-dance.mp3');
 audio.load();
@@ -73,7 +93,7 @@ function resize(event) {
 function reset() {
 
   const { width, height } = canvas;
-  const count = Math.floor(width * 0.05);
+  const count = Math.floor(width * 0.1);
   const theta = random(TWO_PI);
   const amplitude = height * 0.08;
   const cx = width / 2;
@@ -84,17 +104,20 @@ function reset() {
     const percent = (i / count);
     const x = percent * width;
     const distanceToCenter = 1 - Math.abs(cx - x) / cx;
-    const varianceRange = lerp(distanceToCenter, 80, 190);
+    const varianceRange = lerp(distanceToCenter, 50, 200);
     const variance = random(-varianceRange, varianceRange);
     const offset = Math.sin(theta + percent * TWO_PI) * amplitude + variance;
     const y = cy + offset;
 
     return new Light({
       position: {x, y},
-      radius: random(30, 60),
+      // radius: random(30, 50),
+      // TODO: fix this logic!
+      radius: random(25, Math.max(1, 80 * distanceToCenter)),
       color: random(colors),
       alpha: random(0.05, 0.6),
-      softness: random(0.02, 0.5)
+      softness: random(0.02, 0.5),
+      twinkle: random() > 0.7
     });
   });
 }
@@ -120,6 +143,7 @@ function init() {
     gui.add(pilot, 'alpha', 0, 1).onChange(value => pilot.render());
     gui.add(pilot, 'softness', 0, 1).onChange(value => pilot.render());
     gui.addColor(pilot, 'color').onChange(value => pilot.render());
+    gui.close();
   }
 
   document.body.addEventListener('click', function start(event) {
