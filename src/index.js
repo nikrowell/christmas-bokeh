@@ -1,3 +1,4 @@
+import html from 'facon';
 import Background from './background';
 import Light from './light';
 import { random, fill, lerp, TWO_PI } from './utils'
@@ -8,26 +9,6 @@ const canvas = document.createElement('canvas');
 const context = canvas.getContext('2d');
 canvas.className = 'stage';
 document.body.appendChild(canvas);
-
-
-/* import html from 'facon';
-
-const ui = html`
-  <div class="splash">
-    <h1 ref="heading">Christmas Lights</h1>
-    <p>A Christmas-inspired creative coding experiment.</p>
-    <button ref="button">Let's Twinkle!</button>
-  </div>
-`;
-
-const { heading, button } = ui.collect();
-document.body.appendChild(ui);
-
-button.addEventListener('click', function start(event) {
-  button.removeEventListener('click', start);
-  audio.play();
-}); */
-
 
 const audio = new Audio();
 audio.src = require('../assets/nutcracker-arabian-dance.mp3');
@@ -146,8 +127,21 @@ function init() {
     gui.close();
   }
 
-  document.body.addEventListener('click', function start(event) {
-    document.body.removeEventListener('click', start);
+  const ui = html`
+    <div class="splash" ref="splash">
+      <h1>Christmas Lights</h1>
+      <p>A Christmas-inspired creative coding experiment.</p>
+      <button ref="button">Click to Listen</button>
+    </div>
+  `;
+
+  const { splash, button } = ui.collect();
+  document.body.appendChild(ui);
+
+  button.addEventListener('click', function start(event) {
+    button.removeEventListener('click', start);
+    splash.addEventListener('transitionend', () => splash.parentElement.removeChild(splash));
+    splash.classList.add('animate-out');
     audio.play();
   });
 

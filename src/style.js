@@ -46,6 +46,11 @@ const styles = document.createTextNode(css`
     user-select: none;
     cursor: default;
     mix-blend-mode: overlay;
+    transition: 3s;
+  }
+  .splash.animate-out {
+    opacity: 0;
+    transform: scale(0.988);
   }
   h1 {
     font-size: 3.75em;
@@ -55,18 +60,14 @@ const styles = document.createTextNode(css`
     text-transform: lowercase;
   }
   p {
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
   }
   button {
-    padding: 1em 2em;
-    font-size: 1em;
+    font-size: 0.85rem;
     font-family: inherit;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.2em;
     border: 0;
     color: #FFF;
-    border: #FFF 2px solid;
-    border-radius: 8px;
     background: transparent;
     cursor: pointer;
     outline: none;
