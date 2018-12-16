@@ -46,7 +46,7 @@ const styles = document.createTextNode(css`
     user-select: none;
     cursor: default;
     mix-blend-mode: overlay;
-    transition: 3s;
+    transition: opacity 3s, transform 3s;
   }
   .splash.animate-out {
     opacity: 0;

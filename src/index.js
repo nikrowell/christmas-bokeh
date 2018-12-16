@@ -37,20 +37,6 @@ function draw(time) {
 
   if (DEBUG) {
 
-    context.restore();
-    context.beginPath();
-    context.moveTo(0, height * 0.333);
-    context.lineTo(width, height * 0.333);
-    context.moveTo(0, height * 0.667);
-    context.lineTo(width, height * 0.667);
-    context.moveTo(width * 0.333, 0);
-    context.lineTo(width * 0.333, height);
-    context.moveTo(width * 0.667, 0);
-    context.lineTo(width * 0.667, height);
-    context.lineWidth = 0.5;
-    context.strokeStyle = 'rgba(255,10,10,0.75)';
-    context.stroke();
-
     colors.forEach((c, i) => {
       const r = 20;
       context.beginPath();
@@ -84,17 +70,16 @@ function reset() {
 
     const percent = (i / count);
     const x = percent * width;
-    const distanceToCenter = 1 - Math.abs(cx - x) / cx;
-    const varianceRange = lerp(distanceToCenter, 50, 200);
+    const distanceFromEdge = 1 - Math.abs(cx - x) / cx;
+    const varianceRange = lerp(distanceFromEdge, 50, 200);
     const variance = random(-varianceRange, varianceRange);
     const offset = Math.sin(theta + percent * TWO_PI) * amplitude + variance;
     const y = cy + offset;
 
     return new Light({
       position: {x, y},
-      // radius: random(30, 50),
-      // TODO: fix this logic!
-      radius: random(25, Math.max(1, 80 * distanceToCenter)),
+      // magic numbers, not much rhyme or reason... the beauty of creative coding!
+      radius: random(25, Math.max(1, 80 * distanceFromEdge)),
       color: random(colors),
       alpha: random(0.05, 0.6),
       softness: random(0.02, 0.5),
