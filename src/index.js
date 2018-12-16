@@ -70,8 +70,8 @@ function reset() {
 
     const percent = (i / count);
     const x = percent * width;
-    const distanceFromEdge = 1 - Math.abs(cx - x) / cx;
-    const varianceRange = lerp(distanceFromEdge, 50, 200);
+    const distanceToCenter = 1 - Math.abs(cx - x) / cx;
+    const varianceRange = lerp(distanceToCenter, 50, 200);
     const variance = random(-varianceRange, varianceRange);
     const offset = Math.sin(theta + percent * TWO_PI) * amplitude + variance;
     const y = cy + offset;
@@ -79,7 +79,7 @@ function reset() {
     return new Light({
       position: {x, y},
       // magic numbers, not much rhyme or reason... the beauty of creative coding!
-      radius: random(25, Math.max(1, 80 * distanceFromEdge)),
+      radius: random(25, Math.max(1, 80 * distanceToCenter)),
       color: random(colors),
       alpha: random(0.05, 0.6),
       softness: random(0.02, 0.5),
